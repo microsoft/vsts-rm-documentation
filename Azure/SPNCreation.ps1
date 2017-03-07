@@ -7,7 +7,10 @@ param
     [string] $password,
 
     [Parameter(Mandatory=$false, HelpMessage="Provide a SPN role assignment")]
-    [string] $spnRole = "owner"
+    [string] $spnRole = "owner",
+    
+    [Parameter(Mandatory=$false, HelpMessage="Provide Azure environment name for your subscription")]
+    [string] $environmentName = "AzureCloud"
 )
 
 #Initialize
@@ -30,7 +33,7 @@ if ([String]::IsNullOrEmpty($isAzureModulePresent) -eq $true)
 
 Import-Module -Name AzureRM.Profile
 Write-Output "Provide your credentials to access Azure subscription $subscriptionName" -Verbose
-Login-AzureRmAccount -SubscriptionName $subscriptionName
+Login-AzureRmAccount -SubscriptionName $subscriptionName -EnvironmentName $environmentName
 $azureSubscription = Get-AzureRmSubscription -SubscriptionName $subscriptionName
 $connectionName = $azureSubscription.SubscriptionName
 $tenantId = $azureSubscription.TenantId
