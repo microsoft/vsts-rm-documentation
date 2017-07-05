@@ -35,9 +35,9 @@ Import-Module -Name AzureRM.Profile
 Write-Output "Provide your credentials to access Azure subscription $subscriptionName" -Verbose
 Login-AzureRmAccount -SubscriptionName $subscriptionName -EnvironmentName $environmentName
 $azureSubscription = Get-AzureRmSubscription -SubscriptionName $subscriptionName
-$connectionName = $azureSubscription.SubscriptionName
+$connectionName = $azureSubscription.Name
 $tenantId = $azureSubscription.TenantId
-$id = $azureSubscription.SubscriptionId
+$id = $azureSubscription.Id
 
 
 #Create a new AD Application
