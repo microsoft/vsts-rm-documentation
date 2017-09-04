@@ -66,6 +66,7 @@ Write-Output "SPN role assignment completed successfully" -Verbose
 Write-Output "`nCopy and Paste below values for Service Connection" -Verbose
 Write-Output "***************************************************************************"
 Write-Output "Connection Name: $connectionName(SPN)"
+Write-Output "Environment: $environmentName"
 Write-Output "Subscription Id: $id"
 Write-Output "Subscription Name: $connectionName"
 Write-Output "Service Principal Id: $appId"
