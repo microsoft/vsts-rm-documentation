@@ -16,7 +16,7 @@ param
 #Initialize
 $ErrorActionPreference = "Stop"
 $VerbosePreference = "SilentlyContinue"
-$userName = $env:USERNAME
+$userName = ($env:USERNAME).Replace(' ', '')
 $newguid = [guid]::NewGuid()
 $displayName = [String]::Format("VSO.{0}.{1}", $userName, $newguid)
 $homePage = "http://" + $displayName
