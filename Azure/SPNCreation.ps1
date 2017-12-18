@@ -18,7 +18,7 @@ $ErrorActionPreference = "Stop"
 $VerbosePreference = "SilentlyContinue"
 $userName = $env:USERNAME
 $newguid = [guid]::NewGuid()
-$displayName = [String]::Format("VSO.{0}.{1}", $userName, $newguid)
+$displayName = [String]::Format("VSTS.{0}.{1}", $userName, $newguid)
 $homePage = "http://" + $displayName
 $identifierUri = $homePage
 
