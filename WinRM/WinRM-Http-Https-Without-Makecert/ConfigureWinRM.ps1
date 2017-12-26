@@ -9,7 +9,7 @@
 param
 (
     [string] $hostname,
-    [string] $protocol="5986"
+    [string] $protocol
 )
 
 #################################################################################################################################
@@ -59,9 +59,6 @@ function Delete-WinRMListener
 
 function Configure-WinRMListener
 {
-    param([string] $hostname,
-          [string] $protocol)
-
     Write-Verbose -Verbose "Configuring the WinRM listener for $hostname over $protocol protocol. This operation takes little longer time, please wait..."
 
     if($protocol -ne "http")
@@ -83,10 +80,7 @@ function Configure-WinRMHttpListener
 }
 
 function Configure-WinRMHttpsListener
-{
-    param([string] $hostname,
-        [string] $port)
-
+{    
     # Delete the WinRM Https listener if it is already configured
     Delete-WinRMListener
 
@@ -103,8 +97,8 @@ function Configure-WinRMHttpsListener
         }
     }    
 
-    # Configure WinRM
-    cmd.exe /c .\winrmconf.cmd $hostname $thumbprint
+    # Configure WinRM    
+    winrm create winrm/config/listener?Address=*+Transport=HTTPS '@{Hostname="'$hostname'";CertificateThumbprint="'$thumbprint'"}'
 }
 
 function Add-FirewallException
@@ -134,13 +128,6 @@ function Add-FirewallException
 #                                              Configure WinRM                                                                  #
 #################################################################################################################################
 
-netsh advfirewall firewall set rule group="File and Printer Sharing" new enable=yes
-winrm quickconfig
-
-# The default MaxEnvelopeSizekb on Windows Server is 500 Kb which is very less. It needs to be at 8192 Kb. The small envelop size if not changed
-# results in WS-Management service responding with error that the request size exceeded the configured MaxEnvelopeSize quota.
-winrm set winrm/config '@{MaxEnvelopeSizekb = "8192"}'
-
 # Validate script arguments
 if(-not (Is-InputValid -hostname $hostname))
 {
@@ -150,19 +137,27 @@ if(-not (Is-InputValid -hostname $hostname))
     return
 }
 
+netsh advfirewall firewall set rule group="File and Printer Sharing" new enable=yes
+
+winrm quickconfig
+
+
 # Configure WinRM listener
-Configure-WinRMListener -hostname $hostname -protocol $protocol
+Configure-WinRMListener
+
+# The default MaxEnvelopeSizekb on Windows Server is 500 Kb which is very less. It needs to be at 8192 Kb. The small envelop size if not changed
+# results in WS-Management service responding with error that the request size exceeded the configured MaxEnvelopeSize quota.
+winrm set winrm/config '@{MaxEnvelopeSizekb = "8192"}'
+
 
 # Add firewall exception
-Add-FirewallException -protocol $protocol
+Add-FirewallException
 
 # List the listeners
 Write-Verbose -Verbose "Listing the WinRM listeners:"
-$config = winrm enumerate winrm/config/listener
 
 Write-Verbose -Verbose "Querying WinRM listeners by running command: winrm enumerate winrm/config/listener"
-$config
+winrm enumerate winrm/config/listener
 
 #################################################################################################################################
 #################################################################################################################################
-
