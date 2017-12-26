@@ -90,8 +90,6 @@ function Configure-WinRMHttpsListener
     }
 
     # Configure WinRM
-    #winrm create winrm/config/listener?Address=*+Transport=HTTPS '@{Hostname="'$hostname'";CertificateThumbprint="'$thumbprint'"}'
-
     $WinrmCreate= "winrm create --% winrm/config/Listener?Address=*+Transport=HTTPS @{Hostname=`"$hostName`";CertificateThumbprint=`"$thumbPrint`"}"
     invoke-expression $WinrmCreate
     winrm set winrm/config/service/auth '@{Basic="true"}'
