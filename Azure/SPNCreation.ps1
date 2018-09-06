@@ -63,7 +63,7 @@ Import-Module -Name AzureRM.Profile
 Write-Output "Provide your credentials to access Azure subscription $subscriptionName" -Verbose
 Login-AzureRmAccount -SubscriptionName $subscriptionName -EnvironmentName $environmentName
 $azureSubscription = Get-AzureRmSubscription -SubscriptionName $subscriptionName
-$connectionName = $azureSubscription.SubscriptionName
+$connectionName = $azureSubscription.Name
 $tenantId = $azureSubscription.TenantId
 $id = $azureSubscription.SubscriptionId
 
@@ -85,7 +85,7 @@ Write-Output "SPN creation completed successfully (SPN Name: $spnName)" -Verbose
 
 #Assign role to SPN
 Write-Output "Waiting for SPN creation to reflect in Directory before Role assignment"
-Start-Sleep 20
+Start-Sleep 60
 Write-Output "Assigning role ($spnRole) to SPN App ($appId)" -Verbose
 New-AzureRmRoleAssignment -RoleDefinitionName $spnRole -ServicePrincipalName $appId
 Write-Output "SPN role assignment completed successfully" -Verbose
